@@ -13,7 +13,7 @@ export interface AuthenticationData{
   device?: string,
 };
 
-class Authenticator{
+export class Authenticator{
   public generateToken(
     input: AuthenticationData,
     expiresIn: string = process.env.ACC_TOKEN_EXPIRES_IN
@@ -45,4 +45,3 @@ class Authenticator{
     return result;
   };
 };
-export default Authenticator;

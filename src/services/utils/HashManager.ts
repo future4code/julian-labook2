@@ -1,7 +1,7 @@
  
 import * as bcrypt from 'bcryptjs';
 
-class HashManager{
+export class HashManager{
   public async hash(plainText: string): Promise<string>{
     const hash = await bcrypt.hash(plainText, await bcrypt.genSalt(Number(process.env.BCRYPT_COST)));
     return hash;
@@ -11,4 +11,3 @@ class HashManager{
     return isValid
   };
 };
-export default HashManager;
