@@ -23,7 +23,7 @@ export class PostsController {
     try{
       const postId = req.params.id as string;
       const response = await new PostsBusiness().getPostById(postId);
-      //TODO: converter a data de moment para formato DD/MM/AAAA
+      //TODO: mudar data de moment para formato DD/MM/AAAA
       res.send({post: response}).status(200);
     }catch(e){
       res.status(400).send({error: e.message});
