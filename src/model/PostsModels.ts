@@ -3,7 +3,6 @@ interface createPostInput{
   img_url: string,
   type?:string,
   create_at?: string,
-  description?:string,
-  creator_id: string
+  description?:string
 };
 export {createPostInput};
