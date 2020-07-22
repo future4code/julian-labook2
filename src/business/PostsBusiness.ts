@@ -33,7 +33,6 @@ export class PostsBusiness{
       creator_id
     });
   };
-
   async getPostById(id:string): Promise<any>{
     const usePostsDb = new PostsDatabase();
     const dbResponse = await usePostsDb.getPostById(id);

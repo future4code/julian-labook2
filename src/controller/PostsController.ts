@@ -18,7 +18,6 @@ export class PostsController {
         res.status(400).send({error: e.message});
     }
   };
-
   async getPostById(req: Request, res: Response): Promise<void>{
     try{
       const postId = req.params.id as string;
