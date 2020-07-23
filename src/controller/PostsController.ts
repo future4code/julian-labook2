@@ -2,6 +2,8 @@ import {Request, Response} from 'express';
 import {PostsBusiness} from '../business/PostsBusiness';
 import {PostsDatabase} from '../data/PostsDatabase';
 
+import moment from 'moment';
+
 export class PostsController {
 
   async createPost(req: Request, res: Response){
@@ -22,8 +24,9 @@ export class PostsController {
     try{
       const postId = req.params.id as string;
       const response = await new PostsBusiness().getPostById(postId);
-      //TODO: mudar data de moment para formato DD/MM/AAAA
-      res.send({post: response}).status(200);
+      res.send({post:{
+        ...response, create_at: moment(response.create_at, 'YYYY/MM/DD').format('DD/MM/YYYY')
+      }}).status(200);
     }catch(e){
       res.status(400).send({error: e.message});
     };

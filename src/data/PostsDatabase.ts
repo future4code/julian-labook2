@@ -6,7 +6,6 @@ export class PostsDatabase extends BaseDatabase{
 
   public async createPost(input: createPostInput){
     try{
-      //TODO: receber id do criador do post
       await this.getConnection()
       .insert({
         id: input.id,
