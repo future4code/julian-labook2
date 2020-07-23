@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import { AddressInfo } from "net";
-import {postsRouter} from './router/PostsRouter';
+import {postsRouter} from './router/PostsRouter'; 
 import {userRouter} from './router/UserRouter';
 
 dotenv.config();
