@@ -30,4 +30,9 @@ export class PostsBusiness{
     });
   };
 
-};
+  async getPostById(id:string): Promise<any>{
+    const usePostsDb = new PostsDatabase();
+    const dbResponse = await usePostsDb.getPostById(id);
+
+    return dbResponse;
+  };

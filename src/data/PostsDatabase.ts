@@ -22,7 +22,15 @@ export class PostsDatabase extends BaseDatabase{
     };
   };
   
-  public async getPostById(){
-
-  };
-};
+  public async getPostById(id:string): Promise<any>{
+    try{
+      const response = await this.getConnection()
+      .select('*')
+      .from(this.tableName)
+      .where({id});
+      return response[0]
+    }catch(e){
+      throw {message: e.sqlMessage || e.message}
+    };
+  }
+}
