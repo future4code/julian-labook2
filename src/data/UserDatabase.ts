@@ -2,58 +2,39 @@ import { BaseDatabase } from "./BaseDatabase";
 import { IdGenerator } from "../services/utils/IdGenerator";
 
 export class UserDatabase extends BaseDatabase {
-    tableName: string = "User_arq";
-    private idGenerator = new IdGenerator();
+    static TABLE_NAME: string = "USERS_DB_NAME";
 
-    public async signup(name: string, email: string) {
+    public async signup(
+        id: string, 
+        name: string, 
+        email: string, 
+        password: string,
+        ) {
+        
         try {
-            const id = this.idGenerator.generate();
-            await super.getConnection().raw(`
-            INSERT INTO User_arq(id, name, email)
-            VALUES
-            (
-                "${id}",
-                "${name}",
-                "${email}"
-                )`);
+            return await super.getConnection()
+            .insert({
+                id,
+                name,
+                email,
+                password,
+            })
+            .into(UserDatabase.TABLE_NAME)
 
             } catch (err) {
-                throw new Error(err.message);
+                throw new Error(err.message || err.sqlMessage);
             }
     }
 
-    public async approve(id: string){
-        const queryData = await this.getConnection().raw(`
-        SELECT * FROM User_arq
-        WHERE id = "${id}"
-        `);
-    
-        const data = queryData[0][0];
-        console.log(data);
-    
-        if(data.is_approved === 1){
-            throw new Error("Usuário já aprovado!");
-        }
-    
-        await this.getConnection().raw(`
-        UPDATE User_arq
-        SET is_approved = 1
-        WHERE id = "${id}"
-        `);
-    }
+    public async login(id: string):Promise<any>{
+        try {
+            return await this.getConnection()
+            .select("*")
+            .from(UserDatabase.TABLE_NAME)
+            .where({id})
 
-    public async getUserById(id: string){
-
-        const result = await this.getConnection().raw(`
-        SELECT * FROM User_arq
-        WHERE id = "${id}"
-        `);
-    
-        const data = result[0][0];
-        console.log(data);
-        if(data.is_approved === 0){
-            throw new Error("Usuário não aprovado");
+        } catch (error) {
+            throw new Error (error.sqlMessage || error.message);
         }
-        return data;
     }
 }

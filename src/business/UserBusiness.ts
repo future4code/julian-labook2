@@ -1,19 +1,17 @@
 import { UserDatabase } from "../data/UserDatabase";
+import { IdGenerator } from "../services/utils/IdGenerator";
 
 export class UserBusiness{
-    private userDatabase = new UserDatabase();
 
-    public async signup(name: string, email: string){
+    public async signup(name: string, email: string, password: string){
         
-        await this.userDatabase.signup(name, email);
-    }
+        const idGenerator = new IdGenerator();
+        const id:string = idGenerator.generate();
 
-    public async approve(id: string){
-        await this.userDatabase.approve(id);
-    }
-
-    public async getUserById(id: string){
+        const userDatabase = new UserDatabase();
+        await userDatabase.signup(id, name, email, password)
         
-        return await this.userDatabase.getUserById(id);
     }
+
+    
 }
