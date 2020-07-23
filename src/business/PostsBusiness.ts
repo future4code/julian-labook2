@@ -1,5 +1,6 @@
 import {PostsDatabase} from '../data/PostsDatabase';
 import {IdGenerator} from '../services/utils/IdGenerator';
+import {CustomError} from '../error/CustomError';
 
 export class PostsBusiness{
   
@@ -10,12 +11,10 @@ export class PostsBusiness{
     description?:string
   ){
     //TODO: validar criação de post mediante access token
-    if(! img_url){
-      throw new Error('Missing post image url.');
-    };
-    
-    if(!img_url.includes('http')){
-      throw new Error('Invalid post image url.');
+    if(! img_url || img_url.trim() === ''){
+      throw new CustomError(416,'Missing post image url.');
+    }else if(! img_url.includes('http')){
+      throw new CustomError(406,'Invalid post image url.');
     };
 
     const usePostsDb = new PostsDatabase();
@@ -31,8 +30,21 @@ export class PostsBusiness{
   };
 
   async getPostById(id:string): Promise<any>{
-    const usePostsDb = new PostsDatabase();
-    const dbResponse = await usePostsDb.getPostById(id);
+    //TODO: validar consulta de post mediante access token
+    if(id.length != 36){
+      throw new CustomError(416,'Invalid post id.');
+    };
+    try{
+      const usePostsDb = new PostsDatabase();
+      const dbResponse = await usePostsDb.getPostById(id);
 
-    return dbResponse;
+      if(! dbResponse){
+        throw new CustomError(416,'Post not found.');
+      };
+
+      return dbResponse;
+    }catch(e){
+      throw new CustomError(400, e.message);
+    };
   };
+};

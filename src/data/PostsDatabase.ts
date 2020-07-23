@@ -6,7 +6,6 @@ export class PostsDatabase extends BaseDatabase{
 
   public async createPost(input: createPostInput){
     try{
-      //TODO: receber id do criador do post
       await this.getConnection()
       .insert({
         id: input.id,
@@ -28,7 +27,8 @@ export class PostsDatabase extends BaseDatabase{
       .select('*')
       .from(this.tableName)
       .where({id});
-      return response[0]
+      
+      return response.length === 1 && response[0]
     }catch(e){
       throw {message: e.sqlMessage || e.message}
     };

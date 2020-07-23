@@ -1,3 +1,4 @@
+
 interface createPostInput{
   id: string,
   img_url: string,
