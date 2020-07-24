@@ -28,18 +28,6 @@ export class UserDatabase extends BaseDatabase {
             }
     }
 
-    public async login(id: string):Promise<any>{
-        try {
-            return await this.getConnection()
-            .select("*")
-            .from(this.tableName)
-            .where({id})
-
-        } catch (error) {
-            throw new Error (error.sqlMessage || error.message);
-        }
-    }
-
     public getByEmail = async (email:string):Promise<any> => {
         const result = await this.getConnection()
         .select('*')
@@ -47,4 +35,5 @@ export class UserDatabase extends BaseDatabase {
         .where({ email });
         return result[0];
     }
+
 }

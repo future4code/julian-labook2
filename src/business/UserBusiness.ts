@@ -28,36 +28,8 @@ export class UserBusiness{
         }
     }
 
-    /* Metodo do login a fazer */
-
-    public login(){
-        try {
-            
-            if (!email || email.indexOf('@') === -1) {
-                throw new Error('Insert a valid email');
-            }
-            if (!password) {
-                throw new Error('Insert a password');
-            }
-
-            const userDb = new UserDatabase();
-            const user = await userDb.getByEmail(email);
-        
-            const useHashed = new HashManager();
-            const passwordHashed = await useHashed.checkHash(password, user.password);
-
-            if (!passwordHashed) {
-                throw new Error('Invalid password');
-            }
-            const { id, role } = user;
-        
-            const authenticator = new Authenticator();
-            const accessToken = authenticator.generateToken({ id, role }, process.env.ACCESS_TOKEN_EXPIRES_IN as string);
-        
-            return { accessToken };
-
-        } catch (error) {
-            throw new Error (error.message)
-        }
+    public async getUserByEmail(email:string){
+        const userDatabase = new UserDatabase();
+        await userDatabase.getByEmail(email)
     }
 }
