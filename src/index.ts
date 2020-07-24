@@ -3,6 +3,7 @@ import express from "express";
 import { AddressInfo } from "net";
 import {postsRouter} from './router/PostsRouter'; 
 import {userRouter} from './router/UserRouter';
+import { feedRouter } from "./router/FeedRouter";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/post', postsRouter);
+app.use('/feed', feedRouter);
 
 const server = app.listen(process.env.PORT || 3000, ()=>{
   if (server) {
