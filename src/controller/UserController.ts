@@ -24,31 +24,20 @@ export class UserController {
 
     }
 
+    /* TODO validações de senha e email */
+
     async login(req: Request, res: Response) {
         const userBusiness: UserBusiness = new UserBusiness();
 
         try {
-            const userData = {
-                email: req.body.email,
-                password: req.body.password
+            const body = req.body
+
+            const requestInfo = await userBusiness.login(body.email, body.password);
+
+
+            if(requestInfo){
+                res.status(200).send({accessToken: requestInfo })
             }
-
-            const user = await userBusiness.getUserByEmail(userData.email);
-
-            const hashManager = new HashManager();
-            const hashCompare = hashManager.checkHash(userData.password, user.password)
-
-            if(!hashCompare){
-                throw new Error("Invalid Password")
-            }
-
-            const authenticator = new Authenticator();
-            const token = authenticator.generateToken({
-                id: user.id
-            })
-
-            res.status(200).send({token})
-
 
         } catch (error) {
             res.status(400).send({ error: error.message });
