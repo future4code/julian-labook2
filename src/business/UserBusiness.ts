@@ -2,6 +2,7 @@ import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/utils/IdGenerator";
 import {HashManager} from '../services/utils/HashManager';
 import {Authenticator} from '../services/utils/Authenticator';
+import {CustomError} from '../error/CustomError';
 
 export class UserBusiness{
 
@@ -26,7 +27,7 @@ export class UserBusiness{
         } catch (error) {
             throw new Error(error.message)
         }
-    }
+    };
 
     public async login(email:string, password:string){
         const userDatabase = new UserDatabase();
@@ -40,5 +41,51 @@ export class UserBusiness{
 
         return comparePassword && token;
 
-    }
-}
+    };
+
+    public async makeFriendship(friendId: string, token: string){
+        //TODO: não permitir amizades duplicadas ou com o mesmo id de usuário e amigo
+        if(!token){
+            throw new CustomError(416, 'Token de acesso ausente.')
+        };
+
+        const useAuthenticator = new Authenticator();
+        const useUserDb = new UserDatabase();
+
+        const userTokenInfos = useAuthenticator.getData(token);
+        const userDbInfos = await useUserDb.getById(userTokenInfos.id);
+
+        if(!userDbInfos){
+            throw new CustomError(404, 'Usuário não encontrado.');
+        };
+
+        try{
+            await useUserDb.createFriendship(userTokenInfos.id, friendId);
+        }catch(e){
+            throw new CustomError(400, e.message)
+        };
+    };
+
+    public async deleteFriendship(friendId: string, token: string){
+        if(!token){
+            throw new CustomError(416, 'Token de acesso ausente.')
+        };
+
+        const useAuthenticator = new Authenticator();
+        const useUserDb = new UserDatabase();
+
+        const userTokenInfos = useAuthenticator.getData(token);
+        const userDbInfos = await useUserDb.getById(userTokenInfos.id);
+        
+        if(!userDbInfos){
+            throw new CustomError(404, 'Usuário não encontrado.');
+        };
+
+        try{
+            const useUserDb = new UserDatabase();
+            await useUserDb.deleteFriendship(userTokenInfos.id, friendId);
+        }catch(e){
+            throw new CustomError(400, e.message)
+        };
+    };
+};

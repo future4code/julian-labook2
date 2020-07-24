@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
-import { HashManager } from "../services/utils/HashManager";
-import { Authenticator } from "../services/utils/Authenticator";
 
 export class UserController {
 
@@ -21,8 +19,7 @@ export class UserController {
         } catch (err) {
             res.status(400).send({ error: err.message });
         }
-
-    }
+    };
 
     /* TODO validações de senha e email */
 
@@ -42,5 +39,32 @@ export class UserController {
         } catch (error) {
             res.status(400).send({ error: error.message });
         }
-    }
-}
+    };
+
+    async makeFriendship(req: Request, res: Response){
+        const headersToken = req.headers.authorization;
+        const useUserBusiness: UserBusiness = new UserBusiness();
+        try {
+            const body = req.body
+            await useUserBusiness.makeFriendship(body.friendId, headersToken);
+
+            res.status(200).send({message: 'Amizade criada com sucesso!'})
+        } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+    };
+
+    async deleteFriendship(req: Request, res: Response){
+        const headersToken = req.headers.authorization;
+        const useUserBusiness: UserBusiness = new UserBusiness();
+        
+        try {
+            const body = req.body
+            await useUserBusiness.deleteFriendship(body.friendId, headersToken);
+
+            res.status(200).send({message: 'Amizade desfeita com sucesso!'})
+        } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+    };
+};

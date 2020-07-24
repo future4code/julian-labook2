@@ -1,5 +1,4 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { IdGenerator } from "../services/utils/IdGenerator";
 
 export class UserDatabase extends BaseDatabase {
     private tableName: string = process.env.USERS_DB_NAME;
@@ -26,14 +25,58 @@ export class UserDatabase extends BaseDatabase {
             } catch (error) {
                 throw new Error(error.message || error.sqlMessage);
             }
-    }
+    };
 
     public getByEmail = async (email:string):Promise<any> => {
-        const result = await this.getConnection()
-        .select('*')
-        .from(this.tableName)
-        .where({ email });
-        return result[0];
-    }
+        try{
+            const result = await this.getConnection()
+            .select('*')
+            .from(this.tableName)
+            .where({ email });
 
-}
+            return result.length === 1 && result[0];
+        }catch(error){
+            throw new Error(error.message || error.sqlMessage);
+        };
+    };
+
+    public getById = async (id:string):Promise<any> => {
+        try{
+            const result = await this.getConnection()
+            .select('*')
+            .from(this.tableName)
+            .where({ id });
+            
+            return result.length === 1 && result[0];
+        }catch(error){
+            throw new Error(error.message || error.sqlMessage);
+        };
+    };
+
+    public createFriendship = async(user_id: string, friend_id: string): Promise<void>=>{
+        try{
+            await this.getConnection()
+            .insert({
+                user_id,
+                friend_id
+            })
+            .into(process.env.FRIENDSHIPS_DB_NAME);
+        }catch(error){
+            throw new Error(error.message || error.sqlMessage);
+        };  
+    };
+
+    public deleteFriendship = async(user_id: string, friend_id: string): Promise<void>=>{
+        try{
+            await this.getConnection()
+            .delete('*')
+            .where({
+                user_id,
+                friend_id
+            })
+            .from(process.env.FRIENDSHIPS_DB_NAME);
+        }catch(error){
+            throw new Error(error.message || error.sqlMessage);
+        };  
+    };
+};
