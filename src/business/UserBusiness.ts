@@ -28,8 +28,17 @@ export class UserBusiness{
         }
     }
 
-    public async getUserByEmail(email:string){
+    public async login(email:string, password:string){
         const userDatabase = new UserDatabase();
-        await userDatabase.getByEmail(email)
+        const userInfo = await userDatabase.getByEmail(email);
+
+        const checkedPassword = new HashManager();
+        const comparePassword = await checkedPassword.checkHash(userInfo.password ,password);
+
+        const autheticated = new Authenticator();
+        const token = autheticated.generateToken( userInfo ,process.env.ACC_TOKEN_EXPIRES_IN);
+
+        return comparePassword && token;
+
     }
 }
